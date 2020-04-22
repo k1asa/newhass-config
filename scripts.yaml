@@ -1,0 +1,28 @@
+###########################################
+# RPC add-onのサービスコール
+###########################################
+addon_rpcshutdown_redastray:
+  sequence:
+  - alias: addon_rpcshutdown_redastray
+    service: hassio.addon_stdin
+    data:
+      addon: core_rpc_shutdown
+      input: red-astray
+
+
+###########################################
+# nRemo APIでエアコンたたくrest_command
+###########################################
+aircon_living:
+  sequence:
+  - service: rest_command.aircon_living
+    data_template:
+      temp: >
+        {% if is_state('sensor.season', 'summer')%}2{% elif is_state('sensor.season', 'winter')%}-2{%else%}0{%endif%}
+
+aircon_bed:
+  sequence:
+  - service: rest_command.aircon_bed
+    data_template:
+      temp: >
+        {% if is_state('sensor.season', 'summer')%}2{% elif is_state('sensor.season', 'winter')%}-2{%else%}0{%endif%}

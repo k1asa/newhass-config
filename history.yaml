@@ -1,0 +1,109 @@
+######################
+# 履歴機能に入れる入れないの設定 domainは種別まるごと指定 entitiesは個別指定
+######################
+
+use_include_order: true
+exclude:
+  domains:
+    - automation
+    - script
+    - camera
+    - group
+    - input_text
+    - device_tracker
+  entities:
+    - sun.sun
+    - binary_sensor.updater
+    - sensor.ha_installed_version
+    - sensor.ha_current_version
+    - sensor.season
+    - sensor.day_night
+    - sensor.dark_sky_uv_index
+    - sensor.dark_sky_wind_speed
+    - sensor.dark_sky_humidity
+    - sensor.dark_sky_temperature
+    - sensor.dark_sky_summary
+    - sensor.dark_sky_hourly_summary
+    - sensor.dark_sky_daily_summary
+    - sensor.hacs
+    - sensor.home_assistant_up_time
+    - sensor.speedtest_ping
+    - sensor.sonoffppc_energy_totalstarttime
+    - sensor.sonoffpbed_energy_totalstarttime
+    - sensor.sonoffpliv_energy_totalstarttime
+    - sensor.sonoffppc_energy_totalstarttime
+    - sensor.sonoffptv_energy_totalstarttime
+    - sensor.sonoffppc_energy_totalstarttime_2
+    - sensor.sonoffpbed_energy_yesterday
+    - sensor.sonoffptv_energy_yesterday
+    - sensor.sonoffppc_energy_yesterday
+    - sensor.sonoffpliv_energy_yesterday
+    - sensor.sonoffppc_energy_yesterday_2
+    - sensor.sonoffppc_energy_today
+    - sensor.sonoffpliv_energy_today
+    - sensor.sonoffpbed_energy_today
+    - sensor.sonoffptv_energy_today
+    - sensor.sonoffppc_energy_today_2
+    - sensor.sonoffppc_energy_factor
+    - sensor.sonoffpliv_energy_factor
+    - sensor.sonoffpbed_energy_factor
+    - sensor.sonoffptv_energy_factor
+    - sensor.sonoffppc_energy_factor_2
+    - sensor.sonoffppc_energy_current
+    - sensor.sonoffpliv_energy_current
+    - sensor.sonoffpbed_energy_current
+    - sensor.sonoffptv_energy_current
+    - sensor.sonoffppc_energy_current_2
+    - sensor.sonoffppc_energy_status
+    - sensor.sonoffpliv_energy_status
+    - sensor.sonoffpbed_energy_status
+    - sensor.sonoffptv_energy_status
+    - sensor.sonoffppc_energy_status_2
+    - sensor.sonoffppc_energy_reactivepower
+    - sensor.sonoffpliv_energy_reactivepower
+    - sensor.sonoffpbed_energy_reactivepower
+    - sensor.sonoffptv_energy_reactivepower
+    - sensor.sonoffppc_energy_reactivepower_2
+    - sensor.sonoffppc_energy_apparentpower
+    - sensor.sonoffpliv_energy_apparentpower
+    - sensor.sonoffpbed_energy_apparentpower
+    - sensor.sonoffptv_energy_apparentpower
+    - sensor.sonoffppc_energy_apparentpower_2
+    - sensor.sonoffppc_energy_energy_voltage
+    - sensor.sonoffpliv_energy_energy_voltage
+    - sensor.sonoffpbed_energy_energy_voltage
+    - sensor.sonoffptv_energy_energy_voltage
+    - sensor.sonoffppc_energy_energy_voltage_2
+    - binary_sensor.remote_ui
+    - binary_sensor.workday_sensor
+    - media_player.supikagurupu
+    - sensor.external_ip
+    - sensor.myip
+    - sensor.ipv4_address_wlan0
+    - sensor.garbage_burnable
+    - sensor.garbage_plastic
+    - sensor.garbage_cans
+    - sensor.garbage_mixpaper
+    - sensor.garbage_metal
+    - sensor.garbage_carton
+    - sensor.rpi_cpu_temp_round
+    - sensor.rpi_cpu_temp
+    - sensor.processor_use
+    - sensor.disk_free
+    - sensor.disk_use_percent
+    - sensor.memory_free
+    
+
+
+
+include:
+  domains:
+    - person
+    - switch
+    - sensor
+    - binary_sensor
+    - media_player
+    - lock
+    - light
+#    entities:
+

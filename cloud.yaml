@@ -1,0 +1,81 @@
+###########################################
+# Cloud
+#  各クラウドホーム系サービスとの連携項目
+###########################################
+google_actions:
+  filter:
+    include_entities:
+      - switch.red_astray
+      - media_player.playstation_4
+      - switch.aircon_bed
+      - switch.aircon_living
+      - light.bed
+      - light.living
+      - light.dining
+    exclude_domains:
+      - light
+      - media_player
+      - script
+      - camera
+      - group
+      - switch
+      - sensor
+      - automation
+      - lock
+  entity_config:
+    switch.red_astray:
+      name: パソコン
+      aliases:
+       - メイン
+       - メインPC
+       - PC
+    media_player.playstation_4:
+      name: PlayStation4
+      aliases:
+        - プレステ
+        - プレイステーション
+        - プレステ4
+        - PS4
+    # switch.aircon_bed:
+    #   name: ACbed
+    #   aliases:
+    #     - ベッドのエアコン
+    #     - 寝室のエアコン
+    #     - 寝室エアコン
+    #     - エアコン
+    #     - クーラー
+    #     - ベッドエアコン
+    # switch.aircon_living:
+    #   name: ACliving
+    #   aliases:
+    #     - リビングのエアコン
+    #     - エアコン
+    #     - クーラー
+    #     - リビングエアコン
+    # switch.switchbot_gate:
+    #   name: インターホン
+    # light.bed:
+    #   name: light.bed
+    #   aliases:
+    #     - 電灯
+    #     - 灯り
+    #     - ライト
+    # light.living:
+    #   name: light.living
+    #   aliases:
+    #     - 電灯
+    #     - 灯り
+    #     - ライト
+    # light.dining:
+    #   name: light.dining
+    #   aliases:
+    #     - 電灯
+    #     - 灯り
+    #     - ライト
+    # lock.sesame_pep:
+    #   name: sesame
+    #   aliases:
+    #     - ロック
+    #     - 玄関
+    #     - カギ
+

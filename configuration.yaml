@@ -1,0 +1,574 @@
+######################
+# おおもとの設定ファイル。
+#  gitで公開したくない情報は !secret <key名> で隠蔽可能。
+#  →https://www.home-assistant.io/docs/configuration/secrets/
+######################
+
+######################
+# サイト設定
+######################
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+# http:
+#   base_url: example.duckdns.org:8123
+
+
+###########################################
+# Includes
+#  include で他ファイルへ飛ばせる。
+#  include_dir_merge_named でフォルダ指定してすべてマージして読み込ませられる。
+###########################################
+homeassistant:
+  customize: !include customize.yaml
+automation: !include automations.yaml
+camera: !include camera.yaml
+cloud: !include cloud.yaml
+group: !include groups.yaml
+history: !include history.yaml
+rest_command: !include rest_command.yaml
+scene: !include scenes.yaml
+script: !include scripts.yaml
+homekit: !include homekit.yaml
+
+###########################################
+# Core Components
+# Configure a default setup of Home Assistant (frontend, api, etc)
+###########################################
+default_config:
+
+
+###########################################
+# Components
+###########################################
+api:
+ffmpeg:
+wake_on_lan:
+discovery:
+# mqtt: → Integrationsへ
+
+# IFTTT
+ifttt:
+  key: !secret ifttt_key
+
+# Internet Speed
+speedtestdotnet:
+  server_id: 14623
+  scan_interval:
+    hours: 3
+
+
+###############################################################################
+# Binary Sensor
+#  on/offセンサー
+###############################################################################
+binary_sensor: 
+
+  # 稼働日バイナリセンサー
+  ###########################################
+  - platform: workday
+    name: k1_workday
+    country: JP
+  
+  - platform: workday
+    name: reina_workday
+    country: JP
+    workdays: [wed, thu, fri, sat, sun]
+    excludes: [mon, tue]
+
+  # Ping DeadorAliveバイナリセンサー
+  ###########################################
+  - platform: ping
+    host: 192.168.3.1
+    count: 4
+    name: 'Main-Router'
+    scan_interval: 180
+    
+  - platform: ping
+    host: 192.168.3.2
+    count: 4
+    name: 'Blue-Astray'
+    scan_interval: 180
+    
+  - platform: ping
+    host: 192.168.3.3
+    count: 4
+    name: 'Red-Astray'
+    scan_interval: 180
+    
+  - platform: ping
+    host: 192.168.3.4
+    count: 4
+    name: 'Gold-Astray'
+    scan_interval: 180
+    
+  - platform: ping
+    host: 192.168.3.5
+    count: 4
+    name: 'Green-Astray'
+    scan_interval: 180
+    
+  - platform: ping
+    host: 192.168.3.6
+    count: 4
+    name: 'Mirage-Astray'
+    scan_interval: 180
+    
+  - platform: ping
+    host: 192.168.3.210
+    count: 4
+    name: 'Wifi-Router'
+    scan_interval: 180
+
+
+###########################################
+# Device Tracker
+#  位置情報やデバイス情報を取得
+###########################################
+device_tracker:
+#app → Integrationsへ
+  - platform: nmap_tracker
+    hosts:
+      - 192.168.3.0/24
+    exclude:
+     - 192.168.3.5
+
+
+###########################################
+# input
+#  テキスト入力できる変数
+###########################################
+input_text:
+  # LINE送信文
+  ###########################################
+  sendline:
+    name: send to LINE
+    min: 1
+    initial: input text
+
+
+###########################################
+# Light
+#  照明
+###########################################
+light:
+  # Nanoleaf Aurora操作
+  ###########################################
+  - platform: nanoleaf
+    name: 'Aurora'
+    host: 192.168.3.7
+    token: !secret aurora_token
+
+  # nRemoのScript呼び出し
+  ###########################################
+  - platform: template
+    lights:
+      living:
+        friendly_name: 'リビング照明'
+        turn_on:
+          service: rest_command.light_living_on
+        turn_off:
+          service: rest_command.light_living_off
+      dining:
+        friendly_name: 'ダイニング照明'
+        turn_on:
+          service: rest_command.light_dining_on
+        turn_off:
+          service: rest_command.light_dining_off
+      bed:
+        friendly_name: 'ベッド照明'
+        turn_on:
+          service: rest_command.light_bed_on
+        turn_off:
+          service: rest_command.light_bed_off
+
+
+###########################################
+# Lock
+#  鍵
+###########################################
+lock:
+  - platform: sesame
+    api_key: !secret sesame_key
+
+
+###########################################
+# Notify
+#  通知先
+###########################################
+notify: 
+  #- platform: ios　→　Integrationsへ
+  - platform: pushbullet
+    api_key: !secret pushbullet_key
+    name: pushbullet
+  - platform: prowl
+    name: prowl
+    api_key: !secret prowl_key
+
+
+###########################################
+# Recorder
+#  履歴保存に加えたり除外する項目
+###########################################
+recorder:
+  exclude:
+    entities:
+      - camera.bed_cam
+      - camera.k1_map
+      - camera.living_cam
+      - camera.reina_map
+      - group.all_automations
+      - group.all_devices
+      - group.all_lights
+      - group.all_locks
+      - group.all_scripts
+      - group.all_switches
+      - input_text.sendline
+      - sensor.day_night
+      - sensor.moon_template
+      - sensor.season
+      - sun.sun
+
+
+###########################################
+# Sensor
+#  センサー
+###########################################
+sensor:
+
+  # 月の満ち欠けセンサー(英語)
+  ###########################################
+  - platform: moon
+
+  # 月の満ち欠けセンサー(日本語)
+  ###########################################
+  - platform: template
+    sensors:
+      moon_template:
+        friendly_name: 'moon'
+        value_template: >-
+          {% if is_state('sensor.moon','new_moon') %}
+          新月
+          {% elif is_state('sensor.moon','waxing_crescent') %}
+          三日月
+          {% elif is_state('sensor.moon','first_quarter') %}
+          上弦の月
+          {% elif is_state('sensor.moon','waxing_gibbous') %}
+          十日夜の月
+          {% elif is_state('sensor.moon','full_moon') %}
+          満月
+          {% elif is_state('sensor.moon','waning_gibbous') %}
+          寝待月
+          {% elif is_state('sensor.moon','last_quarter') %}
+          下弦の月
+          {% elif is_state('sensor.moon','waning_crescent') %}
+          有明月
+          {% else %}
+          unknown
+          {% endif %}
+
+  # 「今は夏ですｷﾘｯ」って教えてくれるセンサー
+  ###########################################
+  - platform: season
+    type: astronomical
+
+  # Darksky
+  ###########################################
+  - platform: darksky
+    api_key: !secret darksky_key
+    language: ja
+    monitored_conditions:
+    - summary
+    - temperature
+    - wind_speed
+    - humidity
+    - hourly_summary
+    - daily_summary
+    - temperature_high
+    - temperature_low
+    - uv_index
+
+  # 電気使用量から料金概算算出
+  ###########################################
+  - platform: template
+    sensors:
+      pliv_price:
+        friendly_name: '電気料金概算'
+        unit_of_measurement: '円'
+        icon_template: mdi:currency-jpy
+        value_template: >-
+          {% if is_state('sensor.tasmotapliv_energy_total','unknown') %}
+          0
+          {% else %}
+          {{ (states('sensor.tasmotapliv_energy_total')|float * 23.408 ) | round(2) }}
+          {% endif %}
+      pbed_price:
+        friendly_name: '電気料金概算'
+        unit_of_measurement: '円'
+        icon_template: mdi:currency-jpy
+        value_template: >-
+          {% if is_state('sensor.tasmotapbed_energy_total','unknown') %}
+          0
+          {% else %}
+          {{ (states('sensor.tasmotapbed_energy_total')|float * 23.408 ) | round(2) }}
+          {% endif %}
+      ptv_price:
+        friendly_name: '電気料金概算'
+        unit_of_measurement: '円'
+        icon_template: mdi:currency-jpy
+        value_template: >-
+          {% if is_state('sensor.tasmotaptv_energy_total','unknown') %}
+          0
+          {% else %}
+          {{ (states('sensor.tasmotaptv_energy_total')|float * 23.408 ) | round(2) }}
+          {% endif %}
+      ppc_price:
+        friendly_name: '電気料金概算'
+        unit_of_measurement: '円'
+        icon_template: mdi:currency-jpy
+        value_template: >-
+          {% if is_state('sensor.tasmotappc_energy_total','unknown') %}
+          0
+          {% else %}
+          {{ (states('sensor.tasmotappc_energy_total')|float * 23.408 ) | round(2) }}
+          {% endif %}
+
+  # PiのGPIOにつないだI2C接続のbme280センサー
+  ###########################################
+  - platform: bme280
+    name: Ambient
+    monitored_conditions:
+      - temperature
+      - humidity
+      - pressure
+
+  # nature Remoから室温と湿度と照度センサー読み出し
+  ###########################################
+  - platform: rest
+    resource: https://api.nature.global/1/devices/
+    name: nremo_liv_hu
+    device_class: humidity
+    unit_of_measurement: '%'
+    value_template: '{{value_json[0].newest_events.hu.val}}'
+    headers:
+      Authorization: !secret nature_key
+    scan_interval: 120
+    force_update: true
+
+  - platform: rest
+    resource: https://api.nature.global/1/devices/
+    name: nremo_liv_il
+    device_class: illuminance
+    value_template: '{{value_json[0].newest_events.il.val}}'
+    headers:
+      Authorization: !secret nature_key
+    scan_interval: 120
+    force_update: true
+
+  - platform: rest
+    resource: https://api.nature.global/1/devices/
+    name: nremo_liv_te
+    value_template: '{{value_json[0].newest_events.te.val}}'
+    unit_of_measurement: "°C"
+    headers:
+      Authorization: !secret nature_key
+    device_class: temperature
+    scan_interval: 120
+    force_update: true
+
+  - platform: rest
+    resource: https://api.nature.global/1/devices/
+    name: nremo_bed_hu
+    device_class: humidity
+    unit_of_measurement: '%'
+    value_template: '{{value_json[1].newest_events.hu.val}}'
+    headers:
+      Authorization: !secret nature_key
+    scan_interval: 120
+    force_update: true
+
+  - platform: rest
+    resource: https://api.nature.global/1/devices/
+    name: nremo_bed_il
+    device_class: illuminance
+    value_template: '{{value_json[1].newest_events.il.val}}'
+    headers:
+      Authorization: !secret nature_key
+    scan_interval: 120
+    force_update: true
+
+  - platform: rest
+    resource: https://api.nature.global/1/devices/
+    name: nremo_bed_te
+    device_class: temperature
+    unit_of_measurement: "°C"
+    value_template: '{{value_json[1].newest_events.te.val}}'
+    headers:
+      Authorization: !secret nature_key
+    scan_interval: 120
+    force_update: true
+
+    # rpi_起動時間
+    ###########################################
+  - platform: uptime
+    name: Home Assistant Up Time
+    unit_of_measurement: hours
+
+  # rpi_外部IP
+  ###########################################
+  - platform: rest
+    resource: http://icanhazip.com
+    name: external_ip
+    value_template: '{{ value }}'
+    scan_interval: 86400
+
+  # rpi_各ステータス
+  ###########################################
+  - platform: systemmonitor
+    resources:
+      - type: disk_free
+        arg: /
+      - type: memory_free
+      - type: processor_use
+      - type: ipv4_address
+        arg: wlan0
+      - type: last_boot
+      - type: disk_use_percent
+        arg: /
+
+  # rpi_CPU温度
+  ###########################################
+  - platform: command_line
+    name: rpi_cpu_temp
+    command: "cat /sys/class/thermal/thermal_zone0/temp"
+    unit_of_measurement: "°C"
+    value_template: '{{ value | multiply(0.001) }}'
+
+  - platform: template
+    sensors:
+      rpi_cpu_temp_round:
+        friendly_name: 'CPU温度'
+        value_template: "{{ '%.2f'%(states('sensor.rpi_cpu_temp') | float) }}"
+        unit_of_measurement: "°C"
+        device_class: temperature
+
+  # rpi_電流値センサー
+  ###########################################
+  - platform: rpi_power
+    text_state: true
+
+  # 外部IP
+  ###########################################
+  - platform: dnsip
+
+  # hass最新ver
+  ###########################################
+  - platform: rest
+    resource: https://pypi.python.org/pypi/homeassistant/json
+    name: HA Current Version
+    value_template: '{{ value_json.info.version }}'
+
+  # hass現ver
+  ###########################################
+  - platform: version
+    name: HA Installed Version
+
+  # Pi Zero から値読み出し
+  ###########################################
+  - platform: mqtt
+    name: 'bed_bme280_temp'
+    state_topic: 'bed_bme280/tele/sensor'
+    value_template: '{{ value_json["temperature"] }}'
+    unit_of_measurement: '°C'
+    device_class: temperature
+
+
+###########################################
+# Switch
+#  スイッチ
+###########################################
+switch:
+
+  # Windowsマシンのon/off
+  #  wake on lanで起動して、pingで生死確認して、RPCshutdownで終了
+  ###########################################
+  - platform: wake_on_lan
+    name: 'Red-Astray'
+    host: 192.168.3.3
+    mac: '40-8D-5C-53-16-3A'
+    turn_off: 
+      service: script.addon_rpcshutdown_redastray
+      
+  # ベッドルームのエアコンのon/offスイッチ。script経由でrest_command操作。offはrest直叩き
+  ###########################################
+  - platform: template
+    switches:
+      aircon_bed:
+        value_template: "{% if states('sensor.tasmotapbed_energy_power') | float > 3 %}true{%else%}false{% endif %}"
+        turn_on:
+          service: script.aircon_bed
+        turn_off:
+          service: rest_command.aircon_bed_off
+
+  # リビングのエアコンのon/offスイッチ。script経由でrest_command操作。offはrest直叩き
+  ###########################################
+  - platform: template
+    switches:
+      aircon_living:
+        value_template: "{% if states('sensor.tasmotapliv_energy_power') | float > 3 %}true{%else%}false{% endif %}"
+        turn_on:
+          service: script.aircon_living
+        turn_off:
+          service: rest_command.aircon_bed_off
+
+  # Switchbotのスイッチ
+  ###########################################
+  - platform: switchbot
+    name: switchbot_gate
+    mac: 'd6:50:34:58:59:d8'
+  - platform: switchbot
+    name: switchbot_etc
+    mac: 'e0:f4:5c:83:02:64'
+
+
+###########################################
+# Text to speech
+###########################################
+tts:
+
+  # GoogleTranslate(オプション少ない)
+  ###########################################
+#  - platform: google_translate
+#    language: 'ja'
+#    service_name: a_translate_say
+
+  # GoogleCloud(前段設定めんどいオプション盛り沢山)
+  ###########################################
+  - platform: google_cloud
+    key_file: GoogleAsisstant-lunar-47840587844b.json
+    language: ja-JP
+    voice: ja-JP-Wavenet-A
+    speed: 1.1
+    pitch: 1.0
+    profiles:
+      - medium-bluetooth-speaker-class-device
+    service_name: a_cloud_say
+  # service_nameで"cloud_say"より前に位置させないとmedia_playerに日本語でしゃべらせられない
+
+###############################################################################
+# Weather
+#  気象サービス
+###############################################################################
+weather:
+  - platform: openweathermap
+    api_key: !secret openweathermap_key
+  - platform: darksky
+    api_key: !secret darksky_key
+    mode: daily
+
+
+###########################################
+# UIのIntegrationsへ移行
+###########################################
+# MQTT
+# iOS
+# app
+# HACS

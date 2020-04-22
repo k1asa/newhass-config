@@ -1,0 +1,38 @@
+######################
+# motion + motioneye を入れてそっちに動体検知を任せる
+######################
+#- platform: mjpeg
+#  name: "Living Cam"
+#  mjpeg_url: http://192.168.3.5:8081
+#  still_image_url: http://60.126.34.61:8765/picture/1/current/?_username=admin&_signature=a78c9744d485ee0b93b0b23f7687d93ab24dd9bb
+#  username: !secret motion_id
+#  password: !secret motion_pw
+#  authentication: basic
+
+######################
+# motion + motioneye を入れてそっちに動体検知を任せる
+######################
+- platform: mjpeg
+  name: "Bed Cam"
+  mjpeg_url: http://192.168.3.6:8081
+#  still_image_url: http://60.126.34.61:8765/picture/1/current/?_username=admin&_signature=a78c9744d485ee0b93b0b23f7687d93ab24dd9bb
+  username: !secret motion_id
+  password: !secret motion_pw
+  authentication: basic
+
+######################
+# それぞれの位置を地図で表示
+######################
+- platform: generic
+  name: "k1 map"
+  still_image_url: https://maps.googleapis.com/maps/api/staticmap?center={{ states.person.k1.attributes.latitude }},{{ states.person.k1.attributes.longitude }}&zoom=15&size=300x300&maptype=roadmap&markers=color:blue%7Clabel:K1%7C{{ states.person.k1.attributes.latitude }},{{ states.person.k1.attributes.longitude }}&key=AIzaSyAug6WpzdW65I0WcT6zYBnf4JCqjp5IX5o
+  limit_refetch_to_url_change: true
+- platform: generic
+  name: "reina map"
+  still_image_url: https://maps.googleapis.com/maps/api/staticmap?center={{ states.person.reina.attributes.latitude }},{{ states.person.reina.attributes.longitude }}&zoom=15&size=300x300&maptype=roadmap&markers=color:pink%7Clabel:Re%7C{{ states.person.reina.attributes.latitude }},{{ states.person.reina.attributes.longitude }}&key=AIzaSyAug6WpzdW65I0WcT6zYBnf4JCqjp5IX5o
+  limit_refetch_to_url_change: true
+
+######################
+# pi camera
+######################
+- platform: rpi_camera

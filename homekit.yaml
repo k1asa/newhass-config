@@ -1,0 +1,33 @@
+###########################################
+# Homekit
+#  AppleHomekitサービスとの連携項目
+###########################################
+name: HA_Bridge
+filter:
+  include_domains:
+  - light
+  - lock
+  - camera
+  - person
+  include_entities:
+  - sensor.bed_bme280_temp
+  - sensor.ambient_humidity
+  - sensor.ambient_temperature
+  - sensor.nremo_bed_hu
+  - sensor.nremo_bed_il
+  - sensor.nremo_liv_il
+  - switch.aircon_living
+  - switch.aircon_bed
+  - switch.red_astray
+  exclude_domains:
+  - sensor
+  - weather
+  - binary_sensor
+  - automation
+  # - device_tracker
+  - script
+  - group
+  - media_player
+  - switch
+  exclude_entities:
+  - light.aurora

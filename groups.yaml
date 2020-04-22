@@ -1,0 +1,13 @@
+google_home:
+  name: Google Home
+  entities:
+    - media_player.google_bed
+    - media_player.google_kitchen
+    - media_player.google_living
+    - media_player.google_bathroom
+
+persons:
+  name: Persons
+  entities:
+    - person.k1
+    - person.reina
